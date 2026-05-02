@@ -1,0 +1,15 @@
+executable = /bin/bash
+arguments  = src/scripts/run_eval_flowguard.sh $(model) $(benchmark) $(seed) $(Cluster)
+environment = "OPENAI_API_KEY=$ENV(OPENAI_API_KEY) ANTHROPIC_API_KEY=$ENV(ANTHROPIC_API_KEY) HOME=$ENV(HOME) HF_HOME=$ENV(HF_HOME) HF_TOKEN=$ENV(HF_TOKEN) HF_HUB_CACHE=$ENV(HF_HUB_CACHE) TRANSFORMERS_CACHE=$ENV(TRANSFORMERS_CACHE) HUGGINGFACE_HUB_CACHE=$ENV(HUGGINGFACE_HUB_CACHE) FLOWGUARD_RESULTS_DIR=$ENV(FLOWGUARD_RESULTS_DIR) FLOWGUARD_FEATURES_DIR=$ENV(FLOWGUARD_FEATURES_DIR) FLOWGUARD_DATA_DIR=$ENV(FLOWGUARD_DATA_DIR) FLOWGUARD_CONTAINERS_DIR=$ENV(FLOWGUARD_CONTAINERS_DIR) FLOWGUARD_CONTAINER_NAME=flowguard_a100"
+
+output  = $(FLOWGUARD_LOG_DIR)/eval_$(model)_$(benchmark)_$(Cluster).out
+error   = $(FLOWGUARD_LOG_DIR)/eval_$(model)_$(benchmark)_$(Cluster).err
+log     = $(FLOWGUARD_LOG_DIR)/eval_$(model)_$(benchmark)_$(Cluster).log
+
+request_memory = 180000
+request_cpus   = 16
+request_gpus   = 1
+request_disk   = 200G
+requirements   = (TARGET.CUDADeviceName == "NVIDIA A100-SXM4-80GB")
++BypassLXCfs   = "true"
+queue

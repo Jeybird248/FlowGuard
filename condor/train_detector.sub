@@ -1,0 +1,15 @@
+executable = /bin/bash
+arguments  = src/scripts/run_train_detector.sh $(model) $(seed) $(contamination) $(Cluster)
+environment = "HOME=$ENV(HOME) FLOWGUARD_RESULTS_DIR=$ENV(FLOWGUARD_RESULTS_DIR) FLOWGUARD_FEATURES_DIR=$ENV(FLOWGUARD_FEATURES_DIR) FLOWGUARD_CONTAINERS_DIR=$ENV(FLOWGUARD_CONTAINERS_DIR) FLOWGUARD_CONTAINER_NAME=$ENV(FLOWGUARD_CONTAINER_NAME)"
+
+output  = $(FLOWGUARD_LOG_DIR)/train_$(model)_$(Cluster).out
+error   = $(FLOWGUARD_LOG_DIR)/train_$(model)_$(Cluster).err
+log     = $(FLOWGUARD_LOG_DIR)/train_$(model)_$(Cluster).log
+
+# Detector training is CPU-only (Isolation Forest) — no GPU required.
+request_memory = 32000
+request_cpus   = 8
+request_gpus   = 0
+request_disk   = 50G
++BypassLXCfs   = "true"
+queue

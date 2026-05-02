@@ -1,0 +1,20 @@
+executable = /bin/bash
+arguments  = src/scripts/run_extract.sh $(model) $(split) $(n) $(seed) $(Cluster)
+environment = "OPENAI_API_KEY=$ENV(OPENAI_API_KEY) ANTHROPIC_API_KEY=$ENV(ANTHROPIC_API_KEY) HOME=$ENV(HOME) HF_HOME=$ENV(HF_HOME) HF_TOKEN=$ENV(HF_TOKEN) HF_HUB_CACHE=$ENV(HF_HUB_CACHE) TRANSFORMERS_CACHE=$ENV(TRANSFORMERS_CACHE) HUGGINGFACE_HUB_CACHE=$ENV(HUGGINGFACE_HUB_CACHE) FLOWGUARD_RESULTS_DIR=$ENV(FLOWGUARD_RESULTS_DIR) FLOWGUARD_FEATURES_DIR=$ENV(FLOWGUARD_FEATURES_DIR) FLOWGUARD_DATA_DIR=$ENV(FLOWGUARD_DATA_DIR) FLOWGUARD_CONTAINERS_DIR=$ENV(FLOWGUARD_CONTAINERS_DIR) FLOWGUARD_CONTAINER_NAME=$ENV(FLOWGUARD_CONTAINER_NAME)"
+
+output  = $(FLOWGUARD_LOG_DIR)/extract_$(model)_$(split)_$(Cluster).out
+error   = $(FLOWGUARD_LOG_DIR)/extract_$(model)_$(split)_$(Cluster).err
+log     = $(FLOWGUARD_LOG_DIR)/extract_$(model)_$(split)_$(Cluster).log
+
+request_memory = 180000
+request_cpus   = 16
+request_gpus   = 1
+request_disk   = 200G
+requirements   = (TARGET.CUDADeviceName == "NVIDIA H100 80GB HBM3")
++BypassLXCfs   = "true"
+
+on_exit_hold        = (ExitCode == 85)
+on_exit_hold_reason = "Job checkpointed for resume; will retry"
+on_exit_hold_subcode = 99
+periodic_release = ((HoldReasonCode == 34) && (NumSystemHolds < 3)) || ((HoldReasonCode == 3) && (HoldReasonSubCode == 99) && (NumSystemHolds < 5))
+queue

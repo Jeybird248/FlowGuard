@@ -1,0 +1,15 @@
+executable = /bin/bash
+arguments  = src/scripts/run_eval_flowguard.sh $(model) $(benchmark) $(seed) $(Cluster)
+environment = "OPENAI_API_KEY=$ENV(OPENAI_API_KEY) ANTHROPIC_API_KEY=$ENV(ANTHROPIC_API_KEY) HOME=$ENV(HOME) FLOWGUARD_RESULTS_DIR=$ENV(FLOWGUARD_RESULTS_DIR) FLOWGUARD_FEATURES_DIR=$ENV(FLOWGUARD_FEATURES_DIR) FLOWGUARD_DATA_DIR=$ENV(FLOWGUARD_DATA_DIR) FLOWGUARD_CONTAINERS_DIR=$ENV(FLOWGUARD_CONTAINERS_DIR) FLOWGUARD_CONTAINER_NAME=$ENV(FLOWGUARD_CONTAINER_NAME)"
+
+# API-only models (gpt-4.1-mini): CPU only, no GPU.
+output  = $(FLOWGUARD_LOG_DIR)/eval_$(model)_$(benchmark)_$(Cluster).out
+error   = $(FLOWGUARD_LOG_DIR)/eval_$(model)_$(benchmark)_$(Cluster).err
+log     = $(FLOWGUARD_LOG_DIR)/eval_$(model)_$(benchmark)_$(Cluster).log
+
+request_memory = 16000
+request_cpus   = 4
+request_gpus   = 0
+request_disk   = 20G
++BypassLXCfs   = "true"
+queue

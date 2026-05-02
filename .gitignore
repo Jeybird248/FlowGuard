@@ -1,0 +1,26 @@
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Build / cache
+*.sif
+build_logs/
+.apptainer/
+.cache/
+
+# Results
+results/*
+!results/.gitkeep
+
+# Local secrets
+env.local.sh
+.env
+*.api_key
+oauth_token
+
+# HF cache (just in case)
+hub/
+hf_cache/
